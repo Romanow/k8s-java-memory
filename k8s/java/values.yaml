@@ -1,0 +1,28 @@
+image:
+  pullPolicy: IfNotPresent
+  repository: romanowalex/k8s-java-memory
+  tag: v1.0
+
+ports:
+  application: 8080
+  jmx: 9000
+
+liveness:
+  delay: 15
+  timeout: 10
+  path: "/manage/health/readiness"
+  port: 8080
+
+readiness:
+  delay: 15
+  timeout: 10
+  path: "/manage/health/readiness"
+  port: 8080
+
+resources:
+  requests:
+    cpu: 1
+    memory: 4096Mi
+  limits:
+    cpu: 1
+    memory: 4096Mi

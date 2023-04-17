@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    app.kubernetes.io/name: {{ .Chart.Name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+    app.kubernetes.io/component: application
+    app.kubernetes.io/managed-by: helm
+spec:
+  selector:
+    app: {{ .Release.Name }}
+  ports:
+    - name: {{ .Chart.Name }}-app
+      protocol: TCP
+      port: {{ .Values.ports.application }}
+      targetPort: {{ .Chart.Name }}-app
+    - name: {{ .Chart.Name }}-jmx
+      protocol: TCP
+      port: {{ .Values.ports.jmx }}
+      targetPort: {{ .Chart.Name }}-jmx

@@ -1,0 +1,9 @@
+apiVersion: v2
+name: java
+type: application
+version: 1.0.0
+appVersion: "v1.0"
+maintainers:
+  - name: Romanov Alexey
+    email: romanowalex@mail.ru
+    url: https://romanow.github.io

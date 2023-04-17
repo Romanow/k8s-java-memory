@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    app.kubernetes.io/name: {{ .Chart.Name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+    app.kubernetes.io/component: application
+    app.kubernetes.io/managed-by: helm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+        app.kubernetes.io/name: {{ .Chart.Name }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+        app.kubernetes.io/component: application
+        app.kubernetes.io/managed-by: helm
+    spec:
+      containers:
+        - name: {{ .Release.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          resources:
+            requests:
+              memory: "{{ .Values.resources.requests.memory }}"
+              cpu: "{{ .Values.resources.requests.cpu }}"
+            limits:
+              memory: "{{ .Values.resources.limits.memory }}"
+              cpu: "{{ .Values.resources.limits.cpu }}"
+          livenessProbe:
+            initialDelaySeconds: {{ .Values.liveness.delay }}
+            periodSeconds: {{ .Values.liveness.timeout }}
+            failureThreshold: 10
+            httpGet:
+              path: {{ .Values.liveness.path }}
+              port: {{ .Values.liveness.port }}
+          readinessProbe:
+            initialDelaySeconds: {{ .Values.readiness.delay }}
+            periodSeconds: {{ .Values.readiness.timeout }}
+            failureThreshold: 10
+            httpGet:
+              path: {{ .Values.readiness.path }}
+              port: {{ .Values.readiness.port }}
+          ports:
+            - name: {{ .Chart.Name }}-app
+              containerPort: {{ .Values.ports.application }}
+            - name: {{ .Chart.Name }}-jmx
+              containerPort: {{ .Values.ports.jmx }}
