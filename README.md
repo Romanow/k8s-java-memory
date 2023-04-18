@@ -19,10 +19,10 @@ $ kubectl logs -f -l app=k8s-java-memory
 
 На docker выдано 12Gb, 6CPU, 2Gb swap. Запускаем команду `free -m` в pod:
 
-|        | total | used | free | shared | buff/cache | available |
-|--------|:-----:|:----:|:----:|:------:|:----------:|:---------:|
-| Memory | 9951  | 1203 | 833  |  330   |    7914    |   8211    |
-| Swap   | 1535  |  1   | 1534 |        |            |           |
+|        | Total | Used | Free | Shared | Buffers/Cache | Available |
+|--------|:-----:|:----:|:----:|:------:|:-------------:|:---------:|
+| Memory | 9951  | 1203 | 833  |  330   |     7914      |   8211    |
+| Swap   | 1535  |  1   | 1534 |        |               |           |
 
 ```
 $ java -XX:+PrintFlagsFinal --version | grep -Ei 'HeapSize'
@@ -39,3 +39,11 @@ $ java -XX:+PrintFlagsFinal --version | grep -Ei 'RAMPercentage'
    double MaxRAMPercentage      = 25.000000
    double MinRAMPercentage      = 50.000000
 ```
+
+Для работы OS внутри контейнера достаточно 512Mb, следовательно, можно установить параметры:
+
+| Resources  | MaxRAMPercentage |
+|:----------:|:----------------:|
+|   <= 1Gb   |       50%        |
+| [1Gb..2Gb] |   size - 512Mb   |
+|   >= 2Gb   |       75%        |
