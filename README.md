@@ -1,12 +1,12 @@
 # Java memory in k8s cluster
 
 ```shell
+# build image
+$ ./gradlew clean build
+$ docker build . -t romanowalex/k8s-java-memory:v1.0
 # create cluster and upload image
 $ kind create cluster --config kind.yml
 $ kind load docker-image romanowalex/k8s-java-memory:v1.0
-# install helm chart
-$ helm repo add romanow https://romanow.github.io/helm-charts/
-$ helm repo update
 # install service
 $ helm install k8s-java-memory k8s/java
 $ kubectl logs -f -l app=k8s-java-memory
@@ -14,9 +14,10 @@ $ kubectl logs -f -l app=k8s-java-memory
 
 ## Результаты запуска
 
-Используем образ `amazoncorretto:17`, запускаем с `request` == `limit` без дополнительных параметров JVM.
+Запускаем локальный кластер kind, в java приложении используем образ `amazoncorretto:17`. Запускаем
+с `request` == `limit` без дополнительных настроек памяти на стороне JVM.
 
-Запускаем команду `free -m` в pod:
+На docker выдано 12Gb, 6CPU, 2Gb swap. Запускаем команду `free -m` в pod:
 
 |        | total | used | free | shared | buff/cache | available |
 |--------|:-----:|:----:|:----:|:------:|:----------:|:---------:|
